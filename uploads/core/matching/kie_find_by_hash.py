@@ -58,6 +58,7 @@ def check(imgPath, hashPath=HASH_PATH, threadsCount=200):
 
     finds = []
     exitFlag = 0
+    print('check: %s' % imgPath)
     img = image.loadImageFromPath(imgPath, cv2.IMREAD_GRAYSCALE, True, 200)
     kp, des = image.getKpDes(img)
 
