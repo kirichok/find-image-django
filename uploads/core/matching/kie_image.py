@@ -201,8 +201,11 @@ def compare(name1, name2, img1, img2):
         print("Not enough matches are found (%s - %s) - %d/%d" % (name1, name2, len(good), MIN_MATCH_COUNT))
 
 
-def fileName(str):
-    return splitext(basename(str))[0]
+def fileName(str, ext=False):
+    if ext:
+        return basename(str)
+    else:
+        return splitext(basename(str))[0]
 
 
 MIN_MATCH_COUNT = 300
