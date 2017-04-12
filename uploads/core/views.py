@@ -16,9 +16,8 @@ def simple_upload(request):
         myfile = request.FILES['myfile']
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
-
-        print('%s - %s' % (filename, MEDIA_ROOT))
         uploaded_file_url = fs.url(filename)
+        print('%s - %s' % (filename, uploaded_file_url))
         return render(request, 'core/simple_upload.html', {
             'uploaded_file_url': uploaded_file_url
         })
