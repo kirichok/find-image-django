@@ -53,7 +53,7 @@ class HashThread(threading.Thread):
         # print("Exiting " + self.name)
 
 
-def check(imgPath, hashPath=HASH_PATH, threadsCount=200):
+def check(imgPath, hashPath='/home/user/find-image-django/media/hash/', threadsCount=200):
     global exitFlag
 
     finds = []

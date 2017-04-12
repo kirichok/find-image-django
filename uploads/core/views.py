@@ -17,7 +17,7 @@ def simple_upload(request):
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
-        finds = check('http://192.168.0.164:3000%s' % uploaded_file_url, '/media/hash/')
+        finds = check('http://192.168.0.164:3000%s' % uploaded_file_url)
         print('%s' % finds)
         return render(request, 'core/simple_upload.html', {
             'uploaded_file_url': uploaded_file_url
