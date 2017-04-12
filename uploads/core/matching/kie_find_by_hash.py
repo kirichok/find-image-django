@@ -53,7 +53,7 @@ class HashThread(threading.Thread):
         # print("Exiting " + self.name)
 
 
-def check(imgPath, threadsCount=200):
+def check(imgPath, hashPath=HASH_PATH, threadsCount=200):
     global exitFlag
 
     finds = []
@@ -69,12 +69,12 @@ def check(imgPath, threadsCount=200):
 
     nameList = []
     folder = 1
-    path = "%s%s/" % (HASH_PATH, folder)
+    path = "%s%s/" % (hashPath, folder)
     while os.path.exists(path):
         for imagePath in glob.glob("%s*%s" % (path, DES_EXT)):
             nameList.append(imagePath)
         folder += 1
-        path = "%s%s/" % (HASH_PATH, folder)
+        path = "%s%s/" % (hashPath, folder)
 
     if len(nameList) == 0:
         print("Files count is empty")
@@ -121,7 +121,7 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
 
     e1 = cv2.getTickCount()
-    f = check(args['image'], args['threads'])
+    f = check(args['image'], HASH_PATH, args['threads'])
     e2 = cv2.getTickCount()
     time = (e2 - e1) / cv2.getTickFrequency()
     print("Time: %s s" % (time))
