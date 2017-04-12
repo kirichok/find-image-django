@@ -59,7 +59,7 @@ def check(imgPath, hashPath='/home/user/find-image-django/media/hash/', threadsC
     finds = []
     exitFlag = 0
     print('check: %s' % imgPath)
-    imgPath = image.fileName(imgPath)
+    imgPath = image.fileName(imgPath, True)
     imgPath = '/home/user/find-image-django/media/%s' % imgPath
     print(imgPath)
     img = image.loadImageFromPath(imgPath, cv2.IMREAD_GRAYSCALE, True, 200)
