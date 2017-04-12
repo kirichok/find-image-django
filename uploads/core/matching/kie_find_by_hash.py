@@ -59,8 +59,9 @@ def check(imgPath, hashPath='/home/user/find-image-django/media/hash/', threadsC
     finds = []
     exitFlag = 0
     print('check: %s' % imgPath)
-    imagePath = image.fileName(imgPath)
-    imagePath = '/home/user/find-image-django/media/%s' % imagePath
+    imgPath = image.fileName(imgPath)
+    imgPath = '/home/user/find-image-django/media/%s' % imgPath
+    print(imgPath)
     img = image.loadImageFromPath(imgPath, cv2.IMREAD_GRAYSCALE, True, 200)
     kp, des = image.getKpDes(img)
 
