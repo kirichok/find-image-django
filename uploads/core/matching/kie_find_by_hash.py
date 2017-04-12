@@ -6,7 +6,6 @@ import numpy as np
 import time
 # import mysql_conn
 
-import kie_mysql as sql
 import kie_image as image
 
 import os, os.path
