@@ -21,7 +21,7 @@ def simple_upload(request):
         finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100, '.des.jpg')
         print(finds)
         return render(request, 'core/simple_upload.html', {
-            'uploaded_file_url': uploaded_file_url
+            'finds': finds
         })
     return render(request, 'core/simple_upload.html')
 
