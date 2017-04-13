@@ -5,6 +5,7 @@ from django.core.files.storage import FileSystemStorage
 from uploads.core.models import Document
 from uploads.core.forms import DocumentForm
 from uploads.core.matching.kie_find_by_hash import check
+import os.path
 
 def home(request):
     documents = Document.objects.all()
@@ -17,8 +18,8 @@ def simple_upload(request):
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
-        finds = check('http://192.168.0.164:3000%s' % uploaded_file_url)
-        print('%s' % finds)
+        finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '%s/hash/' % settings.MEDIA_ROOT, True, 100, '.png')
+        print(finds)
         return render(request, 'core/simple_upload.html', {
             'uploaded_file_url': uploaded_file_url
         })

@@ -1,24 +1,19 @@
-import queue
+import Queue
 import threading
 import cv2
 import glob
 import numpy as np
-import time
-# import mysql_conn
-
 import uploads.core.matching.kie_image as image
-
-import os, os.path
 import argparse
+import os
 
 HASH_PATH = '../images/hash/'
-KP_EXT = '.kp'
-DES_EXT = '.png'
+DES_EXT = '.des.jpg'
 
-exitFlag = 0
+threading.stack_size(64*1024)
 
 class HashThread(threading.Thread):
-    def __init__(self, threadID, name, lock, workQueue, kp, des, finds):
+    def __init__(self, threadID, name, event, lock, workQueue, kp, des, finds):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
@@ -27,16 +22,17 @@ class HashThread(threading.Thread):
         self.kp = kp
         self.des = des
         self.finds = finds
+        self.event = event
 
     def run(self):
-        global exitFlag
-        # print("Starting " + self.name)
-        while not exitFlag:
+        i = 0
+        print("Starting " + self.name)
+        while not self.event.is_set():
             self.lock.acquire()
             if not self.workQueue.empty():
                 path = self.workQueue.get()
                 self.lock.release()
-
+                i += 1
                 des2 = image.loadImageFromPath(path, cv2.IMREAD_GRAYSCALE, False)
                 des2 = np.asarray(des2, np.float32)
                 if isinstance(des2, list) and len(des2) >= 2:
@@ -47,21 +43,16 @@ class HashThread(threading.Thread):
                         self.finds.append({'m': len(m), 'n': name})
                         self.lock.release()
                         print("Matched %s file %s" % (len(m), name))
+                    # time.sleep(2)
             else:
                 self.lock.release()
 
-        # print("Exiting " + self.name)
+        print("Exiting %s - %d" % (self.name, i))
 
 
-def check(imgPath, hashPath='/home/user/find-image-django/media/hash/', threadsCount=200):
-    global exitFlag
-
+def check(imgPath, hashPath=HASH_PATH, withSubFolders=True, threadsCount=200, ext=DES_EXT):
     finds = []
-    exitFlag = 0
-    print('check: %s' % imgPath)
-    imgPath = image.fileName(imgPath, True)
-    imgPath = '/home/user/find-image-django/media/%s' % imgPath
-    print(imgPath)
+    print (imgPath, hashPath, withSubFolders, threadsCount, ext)
     img = image.loadImageFromPath(imgPath, cv2.IMREAD_GRAYSCALE, True, 200)
     kp, des = image.getKpDes(img)
 
@@ -72,28 +63,36 @@ def check(imgPath, hashPath='/home/user/find-image-django/media/hash/', threadsC
         count += 1
 
     nameList = []
-    folder = 1
-    path = "%s%s/" % (hashPath, folder)
-    while os.path.exists(path):
-        for imagePath in glob.glob("%s*%s" % (path, DES_EXT)):
-            nameList.append(imagePath)
-        folder += 1
+    if withSubFolders:
+        folder = 1
         path = "%s%s/" % (hashPath, folder)
+        print(path)
+        while os.path.exists(path):
+            for imagePath in glob.glob("%s*%s" % (path, ext)):
+                nameList.append(imagePath)
+            folder += 1
+            path = "%s%s/" % (hashPath, folder)
+    else:
+        for imagePath in glob.glob("%s*%s" % (hashPath, ext)):
+            nameList.append(imagePath)
+            # if len(nameList) == 50000:
+            #     break
 
     if len(nameList) == 0:
-        print("Files count is empty")
-
+        print("Hash files count is empty")
     else:
         print("Files count: %d " % len(nameList))
 
+        event = threading.Event()
         queueLock = threading.Lock()
-        workQueue = queue.Queue(1000000)
+        workQueue = Queue.Queue(1000000)
         threads = []
         threadID = 1
 
         # Create new threads
         for tName in threadList:
-            thread = HashThread(threadID, tName, queueLock, workQueue, kp, des, finds)
+            thread = HashThread(threadID, tName, event, queueLock, workQueue, kp, des, finds)
+            thread.daemon=True
             thread.start()
             threads.append(thread)
             threadID += 1
@@ -109,7 +108,7 @@ def check(imgPath, hashPath='/home/user/find-image-django/media/hash/', threadsC
             pass
 
         # Notify threads it's time to exit
-        exitFlag = 1
+        event.set()
 
         # Wait for all threads to complete
         for t in threads:
@@ -119,77 +118,26 @@ def check(imgPath, hashPath='/home/user/find-image-django/media/hash/', threadsC
 
 
 if __name__ == '__main__':
+    def str2bool(v):
+        if v.lower() in ("yes", "true", "t", "y" "1"):
+            return True
+        if v.lower() in ("no", "false", "f", "n" "0"):
+            return False
+        else:
+            raise argparse.ArgumentTypeError('Boolean value expected.')
+
     ap = argparse.ArgumentParser()
     ap.add_argument("-t", "--threads", required=True, type=int, help="Threads count", default=50)
     ap.add_argument("-i", "--image", required=True, help="Path to the image")
+    ap.add_argument("-hf", "--hash", required=True, help="Path to the hash folder", default=HASH_PATH)
+    ap.add_argument("-sf", "--subfolder", type=str2bool, help="Check sub folder", nargs='?', const=True)
+    ap.add_argument("-ext", "--extention", help="Hash files extentions", default=DES_EXT)
     args = vars(ap.parse_args())
 
     e1 = cv2.getTickCount()
-    f = check(args['image'], HASH_PATH, args['threads'])
+    f = check(args['image'], args['hash'], args['subfolder'], args['threads'], args['extention'])
     e2 = cv2.getTickCount()
     time = (e2 - e1) / cv2.getTickFrequency()
     print("Time: %s s" % (time))
     print("Finds: %s" % f)
     print("Exiting Main Thread")
-
-    # img = image.loadImageFromPath(args['image'], cv2.IMREAD_GRAYSCALE, True, 200)
-    # kp, des = image.getKpDes(img)
-    #
-    # threadList = []
-    # count = 0
-    # while count < args['threads']:
-    #     threadList.append("Thread-%d" % count)
-    #     count += 1
-    #
-    # nameList = []
-    # folder = 1
-    # path = "%s%s/" % (HASH_PATH, folder)
-    # while os.path.exists(path):
-    #     for imagePath in glob.glob("%s*%s" % (path, DES_EXT)):
-    #         nameList.append(imagePath)
-    #     folder += 1
-    #     path = "%s%s/" % (HASH_PATH, folder)
-    #     print(folder)
-    #
-    #
-    # if len(nameList) == 0:
-    #     print("Files count is empty")
-    #     exit(0)
-    # else:
-    #     print("Files count: %d " % len(nameList))
-    #
-    # queueLock = threading.Lock()
-    # workQueue = queue.Queue(1000000)
-    # threads = []
-    # threadID = 1
-    #
-    # # Create new threads
-    # for tName in threadList:
-    #     thread = HashThread(threadID, tName, workQueue)
-    #     thread.start()
-    #     threads.append(thread)
-    #     threadID += 1
-    #
-    # # Fill the queue
-    # queueLock.acquire()
-    # for word in nameList:
-    #     workQueue.put(word)
-    # queueLock.release()
-    #
-    # e1 = cv2.getTickCount()
-    # # Wait for queue to empty
-    # while not workQueue.empty():
-    #     pass
-    #
-    # # Notify threads it's time to exit
-    # exitFlag = 1
-    #
-    # # Wait for all threads to complete
-    # for t in threads:
-    #     t.join()
-    #
-    # e2 = cv2.getTickCount()
-    # time = (e2 - e1) / cv2.getTickFrequency()
-    # print("Time: %s s" % (time))
-    #
-    # print("Exiting Main Thread")

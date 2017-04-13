@@ -2,13 +2,11 @@ from __future__ import division
 import numpy as np
 import cv2
 # from matplotlib import pyplot as plt
-import urllib.request as urllib
+import urllib
 import math
 from os.path import basename, splitext
-import _pickle as cPickle
+import cPickle
 import zlib
-
-# from scipy.stats._continuous_distns import maxwell_gen
 
 KP_EXT = '.kp'
 DES_EXT = '.png'
@@ -45,9 +43,9 @@ def __getDeltaTransformation(image, maxSize):
 def keypointDesCalc(image, savePath=''):
     kp, des = sift.detectAndCompute(image, None)
     if savePath:
-        # saveKpDesToPath(kp, des, savePath + KP_EXT)
-        saveKeypointToPath(kp, savePath + KP_EXT)
-        saveDesToPath(des, savePath + DES_EXT)
+        saveKpDesToPath(kp, des, savePath + KP_EXT)
+        # saveKeypointToPath(kp, savePath + KP_EXT)
+        # saveDesToPath(des, savePath + DES_EXT)
     return kp, des
 
 
@@ -196,16 +194,13 @@ def compare(name1, name2, img1, img2):
         img3 = cv2.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
 
         cv2.imwrite("./matched/%d %s_%s" % (len(good), name1, name2), img3)
-        print("Matched (%s - %s) - %d/%d" % (name1, name2, len(good), MIN_MATCH_COUNT))
+        print "Matched (%s - %s) - %d/%d" % (name1, name2, len(good), MIN_MATCH_COUNT)
     else:
-        print("Not enough matches are found (%s - %s) - %d/%d" % (name1, name2, len(good), MIN_MATCH_COUNT))
+        print "Not enough matches are found (%s - %s) - %d/%d" % (name1, name2, len(good), MIN_MATCH_COUNT)
 
 
-def fileName(str, ext=False):
-    if ext:
-        return basename(str)
-    else:
-        return splitext(basename(str))[0]
+def fileName(str):
+    return splitext(basename(str))[0]
 
 
 MIN_MATCH_COUNT = 300
