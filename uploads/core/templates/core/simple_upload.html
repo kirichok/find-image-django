@@ -35,29 +35,22 @@
     </div>
 
     <script>
-        var button = $('button');
-        var input = $('input');
-        var spin = function(){
+        var Spin = function(){
             this.open = function(){
                 $('body').addClass('loading');
             }
             this.close = function(){
                 $('body').removeClass('loading');
             }
-        }
+        };
+        var spin = new Spin();
 
-        button.click(function () {
+        $('button').click(function () {
             spin.open();
-{#            input.prop('disabled', true);#}
-{#            button.prop('disabled', true);#}
-            button.submit();
         });
-        button
 
         function endSearch() {
             spin.close();
-{#            input.prop('disabled', false);#}
-{#            button.prop('disabled', false);#}
         }
     </script>
 {% endblock %}
