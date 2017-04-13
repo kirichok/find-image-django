@@ -18,7 +18,7 @@ def simple_upload(request):
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
-        finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '%s/hash/' % settings.MEDIA_ROOT, True, 100, '.png')
+        finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100, '.png')
         print(finds)
         return render(request, 'core/simple_upload.html', {
             'uploaded_file_url': uploaded_file_url
