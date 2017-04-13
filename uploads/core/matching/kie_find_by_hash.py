@@ -26,7 +26,7 @@ class HashThread(threading.Thread):
 
     def run(self):
         i = 0
-        print("Starting " + self.name)
+        # print("Starting " + self.name)
         while not self.event.is_set():
             self.lock.acquire()
             if not self.workQueue.empty():
@@ -47,7 +47,7 @@ class HashThread(threading.Thread):
             else:
                 self.lock.release()
 
-        print("Exiting %s - %d" % (self.name, i))
+        # print("Exiting %s - %d" % (self.name, i))
 
 
 def check(imgPath, hashPath=HASH_PATH, withSubFolders=True, threadsCount=200, ext=DES_EXT):
@@ -103,9 +103,13 @@ def check(imgPath, hashPath=HASH_PATH, withSubFolders=True, threadsCount=200, ex
             workQueue.put(word)
         queueLock.release()
 
+        e1 = cv2.getTickCount()
         # Wait for queue to empty
         while not workQueue.empty():
             pass
+        e2 = cv2.getTickCount()
+        time = (e2 - e1) / cv2.getTickFrequency()
+        print("Time search: %s s" % (time))
 
         # Notify threads it's time to exit
         event.set()
