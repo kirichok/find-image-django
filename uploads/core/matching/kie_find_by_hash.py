@@ -41,7 +41,7 @@ class HashThread(threading.Thread):
                     m = image.match(self.des, des2)
                     if len(m) >= 50:
                         self.lock.acquire()
-                        self.finds.append({'m': len(m), 'n': name})
+                        self.finds.append({'m': len(m), 'n': 'http://comicstore.cf/uploads/diamonds/%s.jpg' % image.fileName(name)})
                         self.lock.release()
                         print("Matched %s file %s" % (len(m), name))
                     # time.sleep(2)
@@ -119,7 +119,7 @@ def check(imgPath, hashPath=HASH_PATH, withSubFolders=True, threadsCount=200, ex
         for t in threads:
             t.join()
 
-        return finds
+    return finds
 
 
 if __name__ == '__main__':

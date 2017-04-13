@@ -7,22 +7,41 @@ from uploads.core.forms import DocumentForm
 from uploads.core.matching.kie_find_by_hash import check
 import os.path
 
+
 def home(request):
-    documents = Document.objects.all()
-    return render(request, 'core/home.html', { 'documents': documents })
-
-
-def simple_upload(request):
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
-        finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100, '.des.jpg')
+        finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100,
+                      '.des.jpg')
         print(finds)
+        notFound = False
+        if len(finds) == 0:
+            notFound = True
         return render(request, 'core/simple_upload.html', {
-            'finds': finds
+            'finds': finds,
+            'not_found': notFound
         })
+    return render(request, 'core/simple_upload.html')
+    # documents = Document.objects.all()
+    # return render(request, 'core/home.html', { 'documents': documents })
+
+
+def simple_upload(request):
+    # if request.method == 'POST' and request.FILES['myfile']:
+    #     myfile = request.FILES['myfile']
+    #     fs = FileSystemStorage()
+    #     filename = fs.save(myfile.name, myfile)
+    #     uploaded_file_url = fs.url(filename)
+    #     finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100,
+    #                   '.des.jpg')
+    #     print(finds)
+    #     return render(request, 'core/simple_upload.html', {
+    #         'finds': finds
+    #     })
+    # return render(request, 'core/simple_upload.html')
     return render(request, 'core/simple_upload.html')
 
 

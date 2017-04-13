@@ -3,27 +3,61 @@
 {% load static %}
 
 {% block content %}
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" name="myfile">
-    <button type="submit">Upload</button>
-  </form>
 
-  {% if finds %}
-      {% for item in finds %}
-          <p>
-          {% for key, value in item.items %}
-              {% if key == 'm' %}
-                  File: {{ value }}
-              {% else %}
-                  Points: {{ value }}
-              {% endif %}
-          {% endfor %}
-          </p>
-      {% endfor %}
-  {% else %}
-     <p>Not found</p>
-  {% endif %}
+    <div id="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="myfile">
+            <button type="submit">Upload</button>
+        </form>
+        <div id="result">
+            {% if finds %}
+                {% for item in finds %}
+                    <p>
+                        {% for key, value in item.items %}
+                            {% if key == 'm' %}
+                                File: {{ value }}
+                            {% else %}
+                                Points: {{ value }}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                {% endfor %}
+    {#        {% else %}#}
+    {#            <p>Not found</p>#}
+            {% endif %}
+            {% if not_found %}
+                <script>typeof endSearch == "function" && endSearch();</script>
+                <p>Same image/s not found</p>
+            {% endif %}
+        </div>
+{#        <p><a href="{% url 'home' %}">Return to home</a></p>#}
+    </div>
 
-  <p><a href="{% url 'home' %}">Return to home</a></p>
+    <script>
+        var button = $('button');
+        var input = $('input');
+        var spin = function(){
+            this.open = function(){
+                $('body').addClass('loading');
+            }
+            this.close = function(){
+                $('body').removeClass('loading');
+            }
+        }
+
+        button.click(function () {
+            spin.open();
+{#            input.prop('disabled', true);#}
+{#            button.prop('disabled', true);#}
+            button.submit();
+        });
+        button
+
+        function endSearch() {
+            spin.close();
+{#            input.prop('disabled', false);#}
+{#            button.prop('disabled', false);#}
+        }
+    </script>
 {% endblock %}
