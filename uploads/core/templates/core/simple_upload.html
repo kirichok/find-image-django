@@ -16,7 +16,7 @@
                     <p>
                         {% for key, value in item.items %}
                             {% if key == 'n' %}
-                                File: <a href="{{ value }}">{{ value }}</a>
+                                File: <a target="_blank" href="{{ value }}">{{ value }}</a>
                             {% else %}
                                 Points: {{ value }}
                             {% endif %}
