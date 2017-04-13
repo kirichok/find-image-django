@@ -15,7 +15,7 @@
                 {% for item in finds %}
                     <p>
                         {% for key, value in item.items %}
-                            {% if key == 'm' %}
+                            {% if key == 'n' %}
                                 File: <a href="{{ value }}">{{ value }}</a>
                             {% else %}
                                 Points: {{ value }}
