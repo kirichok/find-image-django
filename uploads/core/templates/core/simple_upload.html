@@ -10,8 +10,16 @@
   </form>
 
   {% if finds %}
-      {% for n, m in finds %}
-            <p>File: {{ n }}. Points: {{ m }}</p>
+      {% for item in finds %}
+          <p>
+          {% for key, value in item.items %}
+              {% if key == 'm' %}
+                  File: {{ value }}
+              {% else %}
+                  Points: {{ value }}
+              {% endif %}
+          {% endfor %}
+          </p>
       {% endfor %}
   {% else %}
      <p>Not found</p>

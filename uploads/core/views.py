@@ -18,10 +18,10 @@ def simple_upload(request):
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
-        finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100, '.des.jpg')
-        print(finds)
+        # finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100, '.des.jpg')
+        # print(finds)
         return render(request, 'core/simple_upload.html', {
-            'finds': finds
+            'finds': [{'m': 50, 'n': '123'}, {'m': 10, 'n': '356'}]
         })
     return render(request, 'core/simple_upload.html')
 
