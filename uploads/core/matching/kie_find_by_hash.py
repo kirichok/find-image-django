@@ -35,7 +35,8 @@ class HashThread(threading.Thread):
                 i += 1
                 des2 = image.loadImageFromPath(path, cv2.IMREAD_GRAYSCALE, False)
                 des2 = np.asarray(des2, np.float32)
-                if isinstance(des2, list) and len(des2) >= 2:
+                # if isinstance(des2, list) and len(des2) >= 2:
+                if len(des2) >= 2:
                     name = image.fileName(path)
                     m = image.match(self.des, des2)
                     if len(m) >= 50:
