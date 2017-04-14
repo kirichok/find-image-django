@@ -4,7 +4,7 @@ from django.core.files.storage import FileSystemStorage
 
 from uploads.core.models import Document
 from uploads.core.forms import DocumentForm
-from uploads.core.matching.kie_find_by_hash import check
+import uploads.core.matching.kie_find_by_hash as finder
 import os.path
 
 
@@ -14,8 +14,9 @@ def home(request):
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
-        finds = check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100,
-                      '.des.jpg')
+        # finds = finder.check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100,
+        #               '.des.jpg')
+        finds = finder.checkFromRAM('%s/%s' % (settings.MEDIA_ROOT, filename), 400)
         print(finds)
         notFound = False
         if len(finds) == 0:
