@@ -134,7 +134,6 @@ def loadHashFiles(hashPath=HASH_PATH, withSubFolders=True, threadsCount=50, ext=
         if withSubFolders:
             folder = 0
             path = "%s%s/" % (hashPath, folder)
-            print(path)
             while os.path.exists(path):
                 for imagePath in glob.glob("%s*%s" % (path, ext)):
                     nameList.append(imagePath)
