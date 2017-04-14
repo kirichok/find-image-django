@@ -122,6 +122,9 @@ class HashThread(threading.Thread):
 
 
 def loadHashFiles(hashPath=HASH_PATH, withSubFolders=True, threadsCount=50, ext=DES_EXT):
+    if len(files) != 0:
+        return
+
     threadList = []
     count = 0
     while count < threadsCount:
