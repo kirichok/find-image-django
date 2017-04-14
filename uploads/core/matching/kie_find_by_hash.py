@@ -221,7 +221,7 @@ def checkFromRAM(imgPath, threadsCount=200):
 
         # Fill the queue
         queueLock.acquire()
-        for i in range(0, len(files)-1):
+        for i in range(0, len(files)):
             workQueue.put(i)
         queueLock.release()
 
