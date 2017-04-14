@@ -76,7 +76,9 @@ class RamThread(threading.Thread):
                     m = image.match(self.des, des2)
                     if len(m) >= 50:
                         self.lock.acquire()
-                        self.finds.append({'m': len(m), 'n': name})
+                        self.finds.append({
+                            'm': len(m),
+                            'n': 'http://comicstore.cf/uploads/diamonds/%s.jpg' % image.fileName(name)})
                         self.lock.release()
                         print("Matched %s file %s" % (len(m), name))
             else:
@@ -111,7 +113,9 @@ class HashThread(threading.Thread):
                     m = image.match(self.des, des2)
                     if len(m) >= 50:
                         self.lock.acquire()
-                        self.finds.append({'m': len(m), 'n': name})
+                        self.finds.append({
+                            'm': len(m),
+                            'n': 'http://comicstore.cf/uploads/diamonds/%s.jpg' % image.fileName(name)})
                         self.lock.release()
                         print("Matched %s file %s" % (len(m), name))
                         # time.sleep(2)
@@ -221,6 +225,7 @@ def checkFromRAM(imgPath, threadsCount=200):
             workQueue.put(i)
         queueLock.release()
 
+        t1 = cv2.getTickCount()
         # Wait for queue to empty
         while not workQueue.empty():
             pass
@@ -231,6 +236,10 @@ def checkFromRAM(imgPath, threadsCount=200):
         # Wait for all threads to complete
         for t in threads:
             t.join()
+
+        t2 = cv2.getTickCount()
+        time = (t2 - t1) / cv2.getTickFrequency()
+        print("Time: %s s" % (time))
 
         return finds
 
