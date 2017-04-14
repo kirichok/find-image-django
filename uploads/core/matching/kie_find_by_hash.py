@@ -122,69 +122,68 @@ class HashThread(threading.Thread):
 
 
 def loadHashFiles(hashPath=HASH_PATH, withSubFolders=True, threadsCount=50, ext=DES_EXT):
-    if len(files) != 0:
-        return
+    print(len(files))
+    if len(files) == 0:
+        threadList = []
+        count = 0
+        while count < threadsCount:
+            threadList.append("FilesThread-%d" % count)
+            count += 1
 
-    threadList = []
-    count = 0
-    while count < threadsCount:
-        threadList.append("FilesThread-%d" % count)
-        count += 1
-
-    nameList = []
-    if withSubFolders:
-        folder = 0
-        path = "%s%s/" % (hashPath, folder)
-        print(path)
-        while os.path.exists(path):
-            for imagePath in glob.glob("%s*%s" % (path, ext)):
+        nameList = []
+        if withSubFolders:
+            folder = 0
+            path = "%s%s/" % (hashPath, folder)
+            print(path)
+            while os.path.exists(path):
+                for imagePath in glob.glob("%s*%s" % (path, ext)):
+                    nameList.append(imagePath)
+                    if len(nameList) == 50000:
+                        folder = -2
+                        break
+                folder += 1
+                path = "%s%s/" % (hashPath, folder)
+        else:
+            for imagePath in glob.glob("%s*%s" % (hashPath, ext)):
                 nameList.append(imagePath)
                 if len(nameList) == 50000:
-                    folder = -2
                     break
-            folder += 1
-            path = "%s%s/" % (hashPath, folder)
-    else:
-        for imagePath in glob.glob("%s*%s" % (hashPath, ext)):
-            nameList.append(imagePath)
-            if len(nameList) == 50000:
-                break
 
-    if len(nameList) == 0:
-        print("Hash files count is empty")
-    else:
-        print("Files count: %d " % len(nameList))
+        if len(nameList) == 0:
+            print("Hash files count is empty")
+        else:
+            print("Files count: %d " % len(nameList))
 
-        event = threading.Event()
-        queueLock = threading.Lock()
-        workQueue = Queue.Queue(1000000)
-        threads = []
-        threadID = 1
+            event = threading.Event()
+            queueLock = threading.Lock()
+            workQueue = Queue.Queue(1000000)
+            threads = []
+            threadID = 1
 
-        # Create new threads
-        for tName in threadList:
-            thread = FilesThread(threadID, tName, workQueue, event, queueLock, files)
-            thread.daemon = True
-            thread.start()
-            threads.append(thread)
-            threadID += 1
+            # Create new threads
+            for tName in threadList:
+                thread = FilesThread(threadID, tName, workQueue, event, queueLock, files)
+                thread.daemon = True
+                thread.start()
+                threads.append(thread)
+                threadID += 1
 
-        # Fill the queue
-        queueLock.acquire()
-        for word in nameList:
-            workQueue.put(word)
-        queueLock.release()
+            # Fill the queue
+            queueLock.acquire()
+            for word in nameList:
+                workQueue.put(word)
+            queueLock.release()
 
-        # Wait for queue to empty
-        while not workQueue.empty():
-            pass
+            # Wait for queue to empty
+            while not workQueue.empty():
+                pass
 
-        # Notify threads it's time to exit
-        event.set()
+            # Notify threads it's time to exit
+            event.set()
 
-        # Wait for all threads to complete
-        for t in threads:
-            t.join()
+            # Wait for all threads to complete
+            for t in threads:
+                t.join()
 
 
 def checkFromRAM(imgPath, threadsCount=200):
