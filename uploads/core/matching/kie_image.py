@@ -11,6 +11,7 @@ import zlib
 KP_EXT = '.kp'
 DES_EXT = '.png'
 
+
 def loadImageFromUrl(url, color=cv2.IMREAD_GRAYSCALE, resize=True, maxSize=800):
     resp = urllib.urlopen(url)
     image = np.asarray(bytearray(resp.read()), dtype="uint8")
@@ -19,7 +20,7 @@ def loadImageFromUrl(url, color=cv2.IMREAD_GRAYSCALE, resize=True, maxSize=800):
         return __getDeltaTransformation(image, maxSize)
     else:
         return image
-    # return resize and __getDeltaTransformation(image, maxSize) or image
+        # return resize and __getDeltaTransformation(image, maxSize) or image
 
 
 def loadImageFromPath(path, color=cv2.IMREAD_GRAYSCALE, resize=True, maxSize=800):
@@ -28,7 +29,7 @@ def loadImageFromPath(path, color=cv2.IMREAD_GRAYSCALE, resize=True, maxSize=800
         return __getDeltaTransformation(image, maxSize)
     else:
         return image
-    # return resize and __getDeltaTransformation(image, maxSize) or image
+        # return resize and __getDeltaTransformation(image, maxSize) or image
 
 
 def __getDeltaTransformation(image, maxSize):
