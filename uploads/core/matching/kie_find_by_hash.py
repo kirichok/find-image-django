@@ -111,7 +111,7 @@ class HashThread(threading.Thread):
                 if len(des2) >= 2:
                     name = image.fileName(path)
                     m = image.match(self.des, des2)
-                    if len(m) >= 50:
+                    if len(m) >= 5:
                         self.lock.acquire()
                         self.finds.append({
                             'm': len(m),
