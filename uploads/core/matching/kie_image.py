@@ -7,6 +7,7 @@ import math
 from os.path import basename, splitext
 import cPickle
 import zlib
+from operator import itemgetter
 
 KP_EXT = '.kp'
 DES_EXT = '.png'
@@ -159,6 +160,28 @@ def match(des1, des2):
 
 def getKpDes(img):
     return sift.detectAndCompute(img, None)
+
+
+def sortKp(kp, des, count):
+    _kp = []
+    i = 0
+    for point in kp:
+        _kp.append((point.pt, point.size, point.angle, point.response, point.octave, point.class_id, des[i]))
+        i += 1
+
+    _kp = sorted(_kp, key=itemgetter(1), reverse=True)
+
+    r_kp = []
+    r_des = []
+    for point in _kp:
+        temp = cv2.KeyPoint(x=point[0][0], y=point[0][1], _size=point[1], _angle=point[2], _response=point[3],
+                            _octave=point[4], _class_id=point[5])
+        r_des.append(point[6])
+        r_kp.append(temp)
+        if len(r_kp) == count:
+            break
+
+    return r_kp, np.asarray(r_des, np.float32)
 
 
 def compare(name1, name2, img1, img2):
