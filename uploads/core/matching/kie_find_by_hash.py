@@ -141,7 +141,7 @@ def loadHashFiles(hashPath=HASH_PATH, withSubFolders=True, threadsCount=50, ext=
             while os.path.exists(path):
                 for imagePath in glob.glob("%s*%s" % (path, ext)):
                     nameList.append(imagePath)
-                    if len(nameList) == 5000:
+                    if len(nameList) == 50000:
                         folder = -2
                         break
                 folder += 1
@@ -149,7 +149,7 @@ def loadHashFiles(hashPath=HASH_PATH, withSubFolders=True, threadsCount=50, ext=
         else:
             for imagePath in glob.glob("%s*%s" % (hashPath, ext)):
                 nameList.append(imagePath)
-                if len(nameList) == 5000:
+                if len(nameList) == 50000:
                     break
 
         if len(nameList) == 0:
