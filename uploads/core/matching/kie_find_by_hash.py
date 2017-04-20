@@ -9,7 +9,7 @@ import os
 import time
 
 HASH_PATH = '../images/hash/'
-DES_EXT = '.des.jpg'
+DES_EXT = '.des'
 
 files = []
 threading.stack_size(64*1024)
