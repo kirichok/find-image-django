@@ -174,6 +174,15 @@ def sortKp(kp, des, count):
     r_kp = []
     r_des = []
     for point in _kp:
+        flag = False
+        for p in r_kp:
+            if abs(point[0][0] - p.pt[0]) < 1 and abs(point[0][1] - p.pt[1]) < 1:
+                flag = True
+                break
+
+        if flag:
+            continue
+
         temp = cv2.KeyPoint(x=point[0][0], y=point[0][1], _size=point[1], _angle=point[2], _response=point[3],
                             _octave=point[4], _class_id=point[5])
         r_des.append(point[6])

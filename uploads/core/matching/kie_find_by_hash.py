@@ -191,7 +191,7 @@ def loadHashFiles(hashPath=HASH_PATH, withSubFolders=True, threadsCount=50, ext=
 
 def checkFromRAM(imgPath, threadsCount=200):
     finds = []
-    img = image.loadImageFromPath(imgPath, cv2.IMREAD_GRAYSCALE, True, 1200)
+    img = image.loadImageFromPath(imgPath, cv2.IMREAD_GRAYSCALE, False)
     kp, des = image.getKpDes(img)
     kp, des = image.sortKp(kp, des, 100)
 
