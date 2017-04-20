@@ -33,7 +33,10 @@ class FilesThread(threading.Thread):
                 self.lock.release()
 
                 # t1 = cv2.getTickCount()
-                des2 = np.asarray(image.loadImageFromPath(path, cv2.IMREAD_GRAYSCALE, False), np.float32)
+
+
+                des2 = image.loadDesFromPath(path)
+                # des2 = np.asarray(image.loadImageFromPath(path, cv2.IMREAD_GRAYSCALE, False), np.float32)
                 name = image.fileName(path)
                 # t2 = cv2.getTickCount()
 
