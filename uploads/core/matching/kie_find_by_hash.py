@@ -77,7 +77,7 @@ class RamThread(threading.Thread):
                 name = data['n']
                 if len(des2) >= 2:
                     m = image.match(self.des, des2)
-                    if len(m) >= 50:
+                    if len(m) >= 5:
                         self.lock.acquire()
                         self.finds.append({
                             'm': len(m),
