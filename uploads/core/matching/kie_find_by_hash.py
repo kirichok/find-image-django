@@ -12,7 +12,7 @@ HASH_PATH = '../images/hash/'
 DES_EXT = '.des'
 
 files = []
-threading.stack_size(64*1024)
+# threading.stack_size(64*1024)
 
 class FilesThread(threading.Thread):
     def __init__(self, threadID, name, queue, event, lock, files):
@@ -42,7 +42,7 @@ class FilesThread(threading.Thread):
 
                 if len(des2) >= 2:
                     self.lock.acquire()
-                    self.files.append({'n': name, 'd': des2})
+                    self.files.append([name, des2])
                     self.lock.release()
 
                     # t3 = cv2.getTickCount()
@@ -73,8 +73,8 @@ class RamThread(threading.Thread):
                 data = files[i]
                 self.lock.release()
 
-                des2 = data['d']
-                name = data['n']
+                name = data[0]
+                des2 = data[1]
                 if len(des2) >= 2:
                     m = image.match(self.des, des2)
                     if len(m) >= 5:
@@ -244,6 +244,9 @@ def checkFromRAM(imgPath, threadsCount=200):
         t2 = cv2.getTickCount()
         time = (t2 - t1) / cv2.getTickFrequency()
         print("Time: %s s" % (time))
+
+        if len(finds) > 1:
+            finds = sorted(finds, key=lambda f: f['m'], reverse=True)
 
         return finds
 
