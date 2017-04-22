@@ -16,7 +16,7 @@ def home(request):
         uploaded_file_url = fs.url(filename)
         # finds = finder.check('%s/%s' % (settings.MEDIA_ROOT, filename), '/home/user/py-compare-images/images/hash/', True, 100,
         #               '.des.jpg')
-        finds = finder.checkFromRAM('%s/%s' % (settings.MEDIA_ROOT, filename), 20)
+        finds = finder.checkFromRAM('%s/%s' % (settings.MEDIA_ROOT, filename), 40)
         print(finds)
         notFound = False
         if len(finds) == 0:
