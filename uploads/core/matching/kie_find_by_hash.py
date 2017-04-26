@@ -217,7 +217,7 @@ def checkFromRAM(path):
         else:
             print 'Not found'
     t_end = cv2.getTickCount()
-    print "Time: %s" % (t_end - t_start) / cv2.getTickFrequency()
+    print "Time: %s" % ((t_end - t_start) / cv2.getTickFrequency())
 
     return res
 
