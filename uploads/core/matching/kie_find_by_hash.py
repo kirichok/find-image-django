@@ -34,10 +34,10 @@ class LoadHashThread(threading.Thread):
         while not self.event.is_set():
             if not self.task.empty():
                 task = self.task.get()
-                des = im.loadDesFromPath(task)
+                des = im.loadDesFromPath(task, 100)
                 if len(des) >= 2:
                     self.files.append(im.fileName(task))
-                    self.flann.add([des[:25]])
+                    self.flann.add([des])
 
 
 class checkHashThread(threading.Thread):
@@ -147,8 +147,10 @@ def loadHashFiles(filesInQueue=10000, hashPath=HASH_PATH, ext=DES_EXT):
         for t in threads:
             t.join()
 
+        print('Start training ...')
         for f in flanns:
             f.train()
+        print('Training end')
 
 
 def startThreads(lock):

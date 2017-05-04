@@ -49,7 +49,7 @@ def keypointDesCalc(image, savePath='', count=0, wlock=None):
     if savePath:
         saveKeypointToPath(kp, savePath + KP_EXT, wlock)
         saveDesToPath(des, savePath + DES_EXT, wlock)
-    # return kp, des
+    return kp, des
 
 
 def loadKeypointFromPath(path):
@@ -62,9 +62,13 @@ def loadKeypointFromPath(path):
     return kp
 
 
-def loadDesFromPath(path):
-    des = cPickle.loads(zlib.decompress(open(path, 'rb').read()))
-    return np.asarray(des, np.float32)
+def loadDesFromPath(path, count=None):
+    with open(path, 'rb') as f:
+        des = np.asarray(cPickle.loads(zlib.decompress(f.read())))
+    if count is not None:
+        des = np.copy(des[:count])
+    # des = cPickle.loads(zlib.decompress(open(path, 'rb').read()))
+    return des
 
 
 def read_features_from_file(filename):
@@ -74,8 +78,8 @@ def read_features_from_file(filename):
     f = np.load(filename)
     if f.size == 0:
         return np.array([])
-    f = np.atleast_2d(f)
-    return f
+    # f = np.atleast_2d(f)
+    return np.copy(np.asarray(f, np.float32))
 
 
 def write_features_to_file(filename, data, lock):
@@ -114,7 +118,7 @@ def saveKeypointToPath__(kp, path, lock):
     write_features_to_file(path, data, lock)
 
 
-def saveDesToPath__(des, path, lock):
+def saveDesToPath__(des, path, lock=None):
     data = pack_descriptor(des)
     write_features_to_file(path, data, lock)
 
@@ -157,7 +161,7 @@ def saveKeypointToPath_(kp, path, lock):
         lock.release()
 
 
-def saveDesToPath_(des, path, lock):
+def saveDesToPath_(des, path, lock=None):
     if lock is not None:
         lock.acquire()
     cv2.imwrite(path, des)
@@ -221,7 +225,6 @@ def getKpDes(img):
 
 
 def sortKp(kp, des, count):
-
     def check_min_dist(p, arr, kps):
         flag = False
         for _a in arr:
@@ -395,12 +398,23 @@ def fileName(str):
 MIN_MATCH_COUNT = 300
 
 # Initiate SIFT detector
-sift = cv2.xfeatures2d.SIFT_create()
+# sift = cv2.xfeatures2d.SIFT_create()
+sift = cv2.ORB_create()
 
-FLANN_INDEX_KDTREE = 0
-index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+# FLANN_INDEX_KDTREE = 1
+# index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+# search_params = {}
+# search_params = dict(checks=50)
+
+# flann = cv2.FlannBasedMatcher(index_params, search_params)
+
+FLANN_INDEX_LSH = 6
+index_params = dict(algorithm=FLANN_INDEX_LSH,
+                    table_number=6,  # 12
+                    key_size=12,  # 20
+                    multi_probe_level=1)  # 2
+
 search_params = dict(checks=50)
-
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 # e1 = cv2.getTickCount()
