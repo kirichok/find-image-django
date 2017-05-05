@@ -24,10 +24,12 @@ index_params = dict(algorithm=FLANN_INDEX_LSH,
 search_params = dict(checks=50)
 
 
-sift = cv2.xfeatures2d.SIFT_create()
+# sift = cv2.xfeatures2d.SIFT_create()
+sift = cv2.ORB_create()
 
 flanns = []
 filenames = []
+
 
 class LoadHashThread(threading.Thread):
     def __init__(self, threadID, name, task, flann, files, event):
@@ -135,9 +137,6 @@ def loadHashFiles(filesInQueue=10000, hashPath=HASH_PATH, ext=DES_EXT):
         # Create new threads
         for i, tName in enumerate(threadList):
             currflann = cv2.FlannBasedMatcher(index_params, search_params)
-
-
-
             flanns.append(currflann)
             thread = LoadHashThread(threadID, tName, qFiles[i], currflann, filenames[i], event)
             thread.daemon = True
