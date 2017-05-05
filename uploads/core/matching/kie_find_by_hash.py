@@ -12,8 +12,18 @@ import time
 HASH_PATH = '../images/hash/'
 DES_EXT = '.des'
 
-index_params = dict(algorithm=1, trees=5)
-search_params = {}
+# index_params = dict(algorithm=1, trees=5)
+# search_params = {}
+
+FLANN_INDEX_LSH = 6
+index_params = dict(algorithm=FLANN_INDEX_LSH,
+                    table_number=6,  # 12
+                    key_size=12,  # 20
+                    multi_probe_level=1)  # 2
+
+search_params = dict(checks=50)
+
+
 sift = cv2.xfeatures2d.SIFT_create()
 
 flanns = []
@@ -125,6 +135,9 @@ def loadHashFiles(filesInQueue=10000, hashPath=HASH_PATH, ext=DES_EXT):
         # Create new threads
         for i, tName in enumerate(threadList):
             currflann = cv2.FlannBasedMatcher(index_params, search_params)
+
+
+
             flanns.append(currflann)
             thread = LoadHashThread(threadID, tName, qFiles[i], currflann, filenames[i], event)
             thread.daemon = True
