@@ -46,7 +46,7 @@ class LoadHashThread(threading.Thread):
         while not self.event.is_set():
             if not self.task.empty():
                 task = self.task.get()
-                des = im.loadDesFromPath(task, 100)
+                des = im.loadDesFromPath(task, 50)
                 if len(des) >= 2:
                     self.files.append(im.fileName(task))
                     self.flann.add([des])
