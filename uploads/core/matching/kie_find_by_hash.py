@@ -14,6 +14,7 @@ DES_EXT = '.des'
 
 index_params = dict(algorithm=1, trees=5)
 search_params = {}
+sift = cv2.xfeatures2d.SIFT_create()
 
 # FLANN_INDEX_LSH = 6
 # index_params = dict(algorithm=FLANN_INDEX_LSH,
@@ -22,10 +23,9 @@ search_params = {}
 #                     multi_probe_level=1)  # 2
 #
 # search_params = dict(checks=50)
+# sift = cv2.ORB_create()
 
 
-# sift = cv2.xfeatures2d.SIFT_create()
-sift = cv2.ORB_create()
 
 flanns = []
 filenames = []

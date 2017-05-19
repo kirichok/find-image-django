@@ -398,24 +398,22 @@ def fileName(str):
 MIN_MATCH_COUNT = 300
 
 # Initiate SIFT detector
-# sift = cv2.xfeatures2d.SIFT_create()
-sift = cv2.ORB_create()
+sift = cv2.xfeatures2d.SIFT_create()
 
-# FLANN_INDEX_KDTREE = 1
-# index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
-# search_params = {}
-# search_params = dict(checks=50)
-
-# flann = cv2.FlannBasedMatcher(index_params, search_params)
-
-FLANN_INDEX_LSH = 6
-index_params = dict(algorithm=FLANN_INDEX_LSH,
-                    table_number=6,  # 12
-                    key_size=12,  # 20
-                    multi_probe_level=1)  # 2
-
+FLANN_INDEX_KDTREE = 1
+index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+search_params = {}
 search_params = dict(checks=50)
 flann = cv2.FlannBasedMatcher(index_params, search_params)
+
+# sift = cv2.ORB_create()
+# FLANN_INDEX_LSH = 6
+# index_params = dict(algorithm=FLANN_INDEX_LSH,
+#                     table_number=6,  # 12
+#                     key_size=12,  # 20
+#                     multi_probe_level=1)  # 2
+# search_params = dict(checks=50)
+# flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 # e1 = cv2.getTickCount()
 # e2 = cv2.getTickCount()
