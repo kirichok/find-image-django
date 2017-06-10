@@ -91,7 +91,12 @@ ENV/
 .DS_Store
 
 staticfiles
-media
+media/*
+!media/css/
+!media/js/
+!media/media/
+!media/asset-manifest.json
+
 *.sqlite3
 
 .idea/
