@@ -7,6 +7,30 @@ from uploads.core.forms import DocumentForm
 import uploads.core.matching.kie_find_by_hash as finder
 import os.path
 
+from django.http import JsonResponse
+
+
+def index(request):
+    print(request.method)
+    return render(request, 'core/index.html')
+
+
+def upload(request):
+    if request.method == 'POST' and request.FILES['file']:
+        myfile = request.FILES['file']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+        finds = finder.checkFromRAM('%s/%s' % (settings.MEDIA_ROOT, filename))
+        notFound = False
+        if len(finds) == 0:
+            notFound = True
+        return JsonResponse({
+            'finds': finds,
+            'not_found': notFound
+        })
+
+    return JsonResponse({})
+
 
 def home(request):
     if request.method == 'POST' and request.FILES['myfile']:

@@ -17,5 +17,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uploads.settings")
 application = get_wsgi_application()
 
 print('Started loading the hash files to RAM')
-finder.loadHashFiles(120000, '/home/user/py-compare-images/images/hash/', '.des')
+# finder.loadHashFiles(120000, '/home/user/py-compare-images/images/hash/', '.des')
+finder.loadHashFiles(55000, '/home/evgeniy/projects/python/open-cv/images/hash/', '.des')
 print('Successful loaded the hash files to RAM')

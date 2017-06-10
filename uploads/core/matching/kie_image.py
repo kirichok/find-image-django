@@ -352,6 +352,21 @@ def unpack(data, decompress=True):
     return name, kp, np.array(des)
 
 
+def findHomography(img1, kp1, img2, kp2, matched):
+    src_pts = np.float32([kp1[m.queryIdx].pt for m in matched]).reshape(-1, 1, 2)
+    dst_pts = np.float32([kp2[m.trainIdx].pt for m in matched]).reshape(-1, 1, 2)
+
+    M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+
+    h, w = img1.shape
+    pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
+    dst = cv2.perspectiveTransform(pts, M)
+
+    img2 = cv2.polylines(img2, [np.int32(dst)], True, 255, 3, cv2.LINE_AA)
+
+    return img2
+
+
 def compare(name1, name2, img1, img2):
     # find the keypoints and descriptors with SIFT
     kp1, des1 = sift.detectAndCompute(img1, None)
